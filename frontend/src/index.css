@@ -1,0 +1,18 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+:root{
+    margin: 0;
+    padding: 0;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+html{
+    scroll-behavior: smooth;
+}
+
+.log button{
+    @apply hover:bg-error ;
+}
+ul li{
+    @apply hover:bg-slate-100 rounded pl-2;
+}
