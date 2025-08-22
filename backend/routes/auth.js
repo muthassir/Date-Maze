@@ -30,6 +30,7 @@ router.post("/register", async (req, res) => {
         rating: user.rating,
           status: user.status,
         coupleName: user.coupleName,
+        partnerEmail: user.partnerEmail,
       },
     });
   } catch (err) {
@@ -61,6 +62,7 @@ router.post("/login", async (req, res) => {
         rating: user.rating,
         status: user.status,
         coupleName: user.coupleName,
+        partnerEmail: user.partnerEmail, 
       },
     });
   } catch (err) {
@@ -71,13 +73,14 @@ router.post("/login", async (req, res) => {
 // Update user profile (status, coupleName)
 router.put("/update", auth, async (req, res) => {
   try {
-    const { status, coupleName } = req.body;
+    const { status, coupleName, partnerEmail } = req.body;
 
     const user = await User.findById(req.user);
     if (!user) return res.status(404).json({ message: "User not found" });
 
     user.status = status || user.status;
     user.coupleName = status !== "Single" ? coupleName : ""; // clear coupleName if single
+    user.partnerEmail = status !== "Single" ? partnerEmail : ""; // clear partnerEmail if single
 
     await user.save();
 
@@ -88,6 +91,7 @@ router.put("/update", auth, async (req, res) => {
       rating: user.rating,
       status: user.status,
       coupleName: user.coupleName,
+      partnerEmail: user.partnerEmail, 
     });
   } catch (err) {
     console.error(err);
@@ -96,3 +100,17 @@ router.put("/update", auth, async (req, res) => {
 });
 
 module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

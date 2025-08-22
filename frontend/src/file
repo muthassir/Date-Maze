@@ -1,0 +1,10 @@
+
+ {user && (
+            <Route
+              path="/quiz"
+              element={<QuizPage token={token} coupleId={user.partnerEmail ? [user.email, user.partnerEmail].sort().join("-") : ""} />}
+            />
+          )}
+
+          {/* Redirect non-logged-in users trying to access /quiz */}
+          {!user && <Route path="/quiz" element={<Navigate to="/login" />} />}

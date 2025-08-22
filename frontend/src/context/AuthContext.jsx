@@ -1,7 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
+
+// const API = "https://date-maze.onrender.com";
+const API = "http://localhost:5000"; 
+
 
 // Custom hook to use AuthContext easily
 export const useAuth = () => useContext(AuthContext);
@@ -25,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await axios.post(`${API}/api/auth/login`, {
         email,
         password,
       });
@@ -47,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/register", {
+      const res = await axios.post(`${API}/api/auth/register`, {
         username,
         email,
         password,

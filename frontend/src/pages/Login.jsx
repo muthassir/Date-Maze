@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
@@ -82,6 +82,7 @@ const Login = () => {
 
           <label className="label">Password</label>
           <input
+          
             type="password"
             name="password"
             value={form.password}

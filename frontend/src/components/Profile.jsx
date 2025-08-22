@@ -3,7 +3,13 @@ import { useAuth } from "../context/AuthContext";
 import Loading from "./Loading";
 import axios from "axios";
 
+
+// const API = "https://date-maze.onrender.com";
+const API = "http://localhost:5000";
+
+
 const Profile = () => {
+
   const { user, token, setUser, logout } = useAuth();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -44,7 +50,7 @@ const Profile = () => {
       setSaving(true);
       setError("");
       const res = await axios.put(
-        "http://localhost:5000/api/auth/update",
+        `${API}/api/auth/update`,
         { status, coupleName, partnerEmail },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -186,5 +192,6 @@ const Profile = () => {
     </div>
   );
 };
+
 
 export default Profile;

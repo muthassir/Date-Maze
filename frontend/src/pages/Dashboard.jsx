@@ -1,42 +1,26 @@
-import React from "react";
 import { useAuth } from "../context/AuthContext";
-import Upload from "./Upload";
-import Progress from "./Progress";
-import Rating from "./Rating";
-import Loading from "./Loading";
+import Upload from "../components/Upload";
+import Progress from "../components/Progress";
+import Rating from "../components/Rating";
+import Loading from "../components/Loading";
 
-const Main = () => {
+// const API = "https://date-maze.onrender.com";
+const API = "http://localhost:5000";
+
+const Dashboard = () => {
+
   const { user, loading, error, setError } = useAuth();
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
   const slogans = [
-    "Aquarium",
-    "Beach",
-    "Cafe",
-    "Dancing",
-    "Exercise",
-    "Forest",
-    "Gaming",
-    "Hiking",
-    "Ice Cream",
-    "Jungle",
-    "Kite",
-    "Lake",
-    "Museum",
-    "Netflix",
-    "Ocean",
-    "Picnic",
-    "Quiz",
-    "River",
-    "Spa",
-    "Theatre",
-    "Umbrella",
-    "Valentines",
-    "Waterfall",
-    "Xmas",
-    "Yoga",
-    "Zoo",
+    "Aquarium","Beach","Cafe","Dancing",
+    "Exercise","Forest","Gaming","Hiking","Ice Cream",
+    "Jungle","Kite","Lake","Museum","Netflix","Ocean",
+    "Picnic","Quiz","River","Spa","Theatre","Umbrella",
+    "Valentines","Waterfall","Xmas","Yoga","Zoo",
   ];
+
+  // progress logic
   const totalLetter = 26;
   let completed = user?.photos?.length || 0;
   let value = Math.round((completed / totalLetter) * 100);
@@ -71,7 +55,8 @@ const Main = () => {
           <Loading />
         </div>
       )}
-
+      
+      {/* progress component */}
       <Progress value={value} completed={completed} />
 
       <div className="divider lg:hidden visible"></div>
@@ -97,7 +82,7 @@ const Main = () => {
                   <img
                     src={
                       existing
-                        ? `http://localhost:5000${existing.url}`
+                        ? `${API}${existing.url}`
                         : "https://img.daisyui.com/images/profile/demo/spiderperson@192.webp"
                     }
                     alt={letter}
@@ -121,4 +106,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default Dashboard;

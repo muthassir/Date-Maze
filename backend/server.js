@@ -7,6 +7,8 @@ const dotenv = require("dotenv")
 const authRoutes = require("./routes/auth.js");
 const uploadRoutes = require("./routes/upload.js");
 const ratingRoutes = require("./routes/rating.js");
+const messageRoutes = require("./routes/message.js");
+
 
 dotenv.config()
 
@@ -22,6 +24,8 @@ mongoose.connect(process.env.MONGO_URI)
 app.use("/api/auth", authRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/rating", ratingRoutes);
+app.use("/api/message", messageRoutes);
+
 
 
 app.listen(5000, () => console.log("Server running on http://localhost:5000"));

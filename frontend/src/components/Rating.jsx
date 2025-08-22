@@ -4,6 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import { CiHeart } from "react-icons/ci";
 import { IoIosHeart } from "react-icons/io";
 
+// const API = "https://date-maze.onrender.com";
+const API = "http://localhost:5000"; 
+
 const Rating = () => {
   const { user, token, setUser } = useAuth();
   const [myRating, setMyRating] = useState(user?.rating || 0); // Initialize from user
@@ -15,11 +18,11 @@ const Rating = () => {
   // Fetch overall rating
   const fetchOverall = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/rating");
+      const res = await axios.get(`${API}/api/rating`);
       setOverall(res.data);
-    } catch (err) {
+    } catch (err) {1
       console.error(err);
-      setAlert("Failed to fetch overall rating");
+      setAlert("Can't get overall rating");
     }
   };
 
@@ -28,7 +31,7 @@ const Rating = () => {
     try {
       if (!user?._id) return;
       const res = await axios.get(
-        `http://localhost:5000/api/rating/${user._id}`,
+        `${API}/api/rating/${user._id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setMyRating(res.data.rating);
@@ -40,7 +43,7 @@ const Rating = () => {
       });
     } catch (err) {
       console.error(err);
-      setAlert("Failed to fetch your rating");
+      setAlert("Can't get your rating");
     } finally {
       setLoadingRating(false);
     }
@@ -61,7 +64,7 @@ const Rating = () => {
     setAlert("");
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/rating",
+        `${API}/api/rating`,
         { rating: value },
         { headers: { Authorization: `Bearer ${token}` } }
       );

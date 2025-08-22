@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Loading from "./Loading";
 
+
+// const API = "https://date-maze.onrender.com";
+const API = "http://localhost:5000"; 
+
+
 const Upload = ({ letter, slogan }) => {
   const { token, setUser } = useAuth();
   const [file, setFile] = useState(null);
@@ -21,7 +26,7 @@ const Upload = ({ letter, slogan }) => {
       setLoading(true);
       setError("");
 
-      const res = await fetch(`http://localhost:5000/api/upload/${letter}`, {
+      const res = await fetch(`${API}/api/upload/${letter}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
