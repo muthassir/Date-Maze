@@ -4,14 +4,8 @@ import Loading from "./Loading";
 import axios from "axios";
 
 
-// const API = "https://date-maze.onrender.com";
-const API = "http://localhost:5000";
-
-
 const Profile = () => {
-
-  const { user, token, setUser, logout } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { user, token, setUser, logout, API } = useAuth();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState(user?.status || "Single");
@@ -19,7 +13,8 @@ const Profile = () => {
   const [partnerEmail, setPartnerEmail] = useState(user?.partnerEmail || "");
   const [isDirty, setIsDirty] = useState(false);
 
-  // Check if user made changes
+
+  // Track changes
   useEffect(() => {
     if (
       status !== (user?.status || "Single") ||
@@ -34,14 +29,12 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      setLoading(true);
-      setError("");
-      await Promise.resolve(logout());
+      await logout();
+      // no need to navigate, Header/App will update automatically
+        window.location.reload(); // Refresh the page
     } catch (err) {
       console.error(err);
       setError("Logout failed. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -55,12 +48,12 @@ const Profile = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      setUser(prev => {
+      setUser((prev) => {
         const updated = {
           ...prev,
           status: res.data.status,
           coupleName: res.data.coupleName,
-          partnerEmail: res.data.partnerEmail
+          partnerEmail: res.data.partnerEmail,
         };
         localStorage.setItem("user", JSON.stringify(updated));
         return updated;
@@ -75,18 +68,18 @@ const Profile = () => {
     }
   };
 
+  if (!user) return null;
+
   return (
     <div className="navbar-end">
       <div className="btn btn-ghost btn-circle cursor-pointer">
         <div className="avatar">
           <div className="ring-error h-6 ring-offset-base-100 w-6 rounded-full ring-2 ring-offset-2 cursor-pointer">
             <button
-              onClick={() =>
-                document.getElementById("profile_modal").showModal()
-              }
+              onClick={() => document.getElementById("profile_modal")?.showModal()}
               className="cursor-pointer"
             >
-              {user?.username?.charAt(0).toUpperCase() || "?"}
+              {user.username?.charAt(0).toUpperCase()}
             </button>
 
             <dialog id="profile_modal" className="modal modal-center sm:modal-middle">
@@ -94,19 +87,9 @@ const Profile = () => {
                 <h3 className="font-bold text-lg">Profile</h3>
 
                 <div className="mt-2 space-y-2">
-                  <p><strong>Name:</strong> {user?.username || "N/A"}</p>
-                  <p>
-                    <strong>Email:</strong>{" "}
-                    {user?.email ? (
-                      <span>
-                        {user.email}
-                      </span>
-                    ) : (
-                      "N/A"
-                    )}
-                  </p>
+                  <p><strong>Name:</strong> {user.username}</p>
+                  <p><strong>Email:</strong> {user.email}</p>
 
-                  {/* Status selector */}
                   <div>
                     <label className="font-semibold">Status:</label>
                     <select
@@ -120,32 +103,30 @@ const Profile = () => {
                     </select>
                   </div>
 
-                  {/* Couple name input */}
                   {status !== "Single" && (
-                    <div>
-                      <label className="font-semibold">Couple Name:</label>
-                      <input
-                        type="text"
-                        value={coupleName}
-                        onChange={(e) => setCoupleName(e.target.value)}
-                        className="input input-bordered input-sm w-full max-w-xs"
-                        placeholder="Enter couple name"
-                      />
-                    </div>
-                  )}
+                    <>
+                      <div>
+                        <label className="font-semibold">Couple Name:</label>
+                        <input
+                          type="text"
+                          value={coupleName}
+                          onChange={(e) => setCoupleName(e.target.value)}
+                          className="input input-bordered input-sm w-full max-w-xs"
+                          placeholder="Enter couple name"
+                        />
+                      </div>
 
-                  {/* Partner email input */}
-                  {status !== "Single" && (
-                    <div>
-                      <label className="font-semibold">Partner Email:</label>
-                      <input
-                        type="email"
-                        value={partnerEmail}
-                        onChange={(e) => setPartnerEmail(e.target.value)}
-                        className="input input-bordered input-sm w-full max-w-xs"
-                        placeholder="Enter partner's email"
-                      />
-                    </div>
+                      <div>
+                        <label className="font-semibold">Partner Email:</label>
+                        <input
+                          type="email"
+                          value={partnerEmail}
+                          onChange={(e) => setPartnerEmail(e.target.value)}
+                          className="input input-bordered input-sm w-full max-w-xs"
+                          placeholder="Enter partner's email"
+                        />
+                      </div>
+                    </>
                   )}
                 </div>
 
@@ -174,9 +155,8 @@ const Profile = () => {
                 <button
                   className="btn btn-error mt-2 w-full"
                   onClick={handleLogout}
-                  disabled={loading}
                 >
-                  {loading ? <Loading /> : "Logout"}
+                  Logout
                 </button>
 
                 <div className="modal-action">
@@ -192,6 +172,5 @@ const Profile = () => {
     </div>
   );
 };
-
 
 export default Profile;

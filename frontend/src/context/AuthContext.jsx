@@ -3,8 +3,8 @@ import axios from "axios";
 
 const AuthContext = createContext();
 
-// const API = "https://date-maze.onrender.com";
-const API = "http://localhost:5000"; 
+const API = "https://date-maze.onrender.com";
+// const API = "http://localhost:5000"; 
 
 
 // Custom hook to use AuthContext easily
@@ -15,7 +15,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || null); // ✅ token
   const [loading, setLoading] = useState(false); // spinner control
   const [error, setError] = useState(""); // error alert
-
   // Load user from localStorage on mount
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -71,8 +70,8 @@ export const AuthProvider = ({ children }) => {
 
   // Logout function
   const logout = () => {
-    setUser(null);
-    setToken(null); 
+    setUser("");
+    setToken(""); 
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   };
@@ -88,7 +87,8 @@ export const AuthProvider = ({ children }) => {
         logout,
         loading,
         error,
-        setError, // so you can clear alert manually
+        setError,
+        API,
       }}
     >
       {children}

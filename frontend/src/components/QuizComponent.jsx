@@ -44,7 +44,7 @@ const QuizComponent = () => {
 
   if (showResult)
     return (
-      <div className="max-w-xl mx-auto mt-6  p-6 rounded-xl shadow-md">
+      <div className="max-w-xl mx-auto mt-6  p-6 rounded-xl shadow-md ">
         <h2 className="text-2xl font-bold text-center mb-4">
           Compatibility Score: {score}%
         </h2>
@@ -59,7 +59,7 @@ const QuizComponent = () => {
         </ul>
         <button
           onClick={() => setShowResult(false)}
-          className="mt-4 w-full px-6 py-2 bg-pink-500 rounded-lg hover:bg-pink-600"
+          className="w-full mt-4 px-6 py-2   btn btn-error transform hover:scale-105 transition-all duration-200"
         >
           Edit Answers
         </button>
@@ -95,7 +95,8 @@ const QuizComponent = () => {
 
       <button
         onClick={handleSubmit}
-        className="w-full mt-4 px-6 py-2 bg-error text-black  rounded-lg hover:bg-pink-600"
+        className="w-full mt-4 px-6 py-2   btn btn-error transform hover:scale-105 transition-all duration-200
+"
       >
         Show Compatibility
       </button>

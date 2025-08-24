@@ -4,7 +4,11 @@ const QuizPage = () => {
 
 
 
-  return <QuizComponent  />;
+  return(
+    <div className="pt-22">
+       <QuizComponent  />;
+    </div>
+  )
 };
 
 export default QuizPage;

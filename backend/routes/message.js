@@ -8,7 +8,7 @@ const router = express.Router();
 // Send message
 router.post("/", auth, async (req, res) => {
   try {
-    const { text, receiverEmail } = req.body;
+    const { text, receiverEmail, isOnline } = req.body;
     if (!text || !receiverEmail)
       return res.status(400).json({ message: "Text and receiverEmail required" });
 
@@ -20,6 +20,7 @@ router.post("/", auth, async (req, res) => {
       sender: req.user,
       receiver: receiver._id,
       text,
+      isOnline,
     });
 
     // Correct populate usage

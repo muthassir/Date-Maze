@@ -4,12 +4,10 @@ import { useAuth } from "../context/AuthContext";
 import { CiHeart } from "react-icons/ci";
 import { IoIosHeart } from "react-icons/io";
 
-// const API = "https://date-maze.onrender.com";
-const API = "http://localhost:5000"; 
 
 const Rating = () => {
-  const { user, token, setUser } = useAuth();
-  const [myRating, setMyRating] = useState(user?.rating || 0); // Initialize from user
+  const { user, token, setUser, API } = useAuth();
+  const [myRating, setMyRating] = useState(0);
   const [overall, setOverall] = useState({ avgRating: 0, count: 0 });
   const [loading, setLoading] = useState(false);
   const [loadingRating, setLoadingRating] = useState(true);
@@ -20,7 +18,7 @@ const Rating = () => {
     try {
       const res = await axios.get(`${API}/api/rating`);
       setOverall(res.data);
-    } catch (err) {1
+    } catch (err) {
       console.error(err);
       setAlert("Can't get overall rating");
     }
@@ -30,17 +28,13 @@ const Rating = () => {
   const fetchMyRating = async () => {
     try {
       if (!user?._id) return;
-      const res = await axios.get(
-        `${API}/api/rating/${user._id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setMyRating(res.data.rating);
-      // Update user object and localStorage for next refresh
-      setUser(prev => {
-        const updated = { ...prev, rating: res.data.rating };
-        localStorage.setItem("user", JSON.stringify(updated));
-        return updated;
+      const res = await axios.get(`${API}/api/rating/${user._id}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
+      setMyRating(res.data.rating || 0);
+
+      // Update user in context only
+      setUser((prev) => ({ ...prev, rating: res.data.rating || 0 }));
     } catch (err) {
       console.error(err);
       setAlert("Can't get your rating");
@@ -50,16 +44,21 @@ const Rating = () => {
   };
 
   useEffect(() => {
-    fetchOverall();
-    if (user?._id) {
-      fetchMyRating();
-    } else {
-      setLoadingRating(false);
-    }
+    const fetchData = async () => {
+      fetchOverall();
+      if (user?._id) {
+        fetchMyRating();
+      } else {
+        setMyRating(0);
+        setLoadingRating(false);
+      }
+    };
+    fetchData();
   }, [user]);
 
   // Submit rating
   const handleRating = async (value) => {
+    if (!user) return;
     setLoading(true);
     setAlert("");
     try {
@@ -68,16 +67,12 @@ const Rating = () => {
         { rating: value },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setMyRating(res.data.rating);
+      setMyRating(res.data.rating || 0);
       setAlert("Rating saved successfully!");
       fetchOverall();
 
-      // Update user object and localStorage
-      setUser(prev => {
-        const updated = { ...prev, rating: res.data.rating };
-        localStorage.setItem("user", JSON.stringify(updated));
-        return updated;
-      });
+      // Update user in context only
+      setUser((prev) => ({ ...prev, rating: res.data.rating || 0 }));
     } catch (err) {
       console.error(err);
       setAlert("Error saving rating");
@@ -85,6 +80,14 @@ const Rating = () => {
       setLoading(false);
     }
   };
+
+  if (!user) {
+    return (
+      <div className="p-6 flex flex-col gap-4 items-center">
+        <p>Please log in to rate your experience.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 flex flex-col gap-4 items-center">

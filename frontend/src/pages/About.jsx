@@ -1,7 +1,7 @@
 
 const About = () => {
   return (
-    <div className="p-6 max-w-3xl mx-auto lg:h-screen h-full flex flex-col items-center">
+    <div className="p-6 max-w-3xl mx-auto lg:h-screen h-full flex flex-col items-center pt-24">
       <h1 className="text-3xl font-bold mb-4">About A2Z Date</h1>
       <p className="mt-12  text-error">
        💗 A2Z Date is a thoughtfully designed platform for couples seeking to create

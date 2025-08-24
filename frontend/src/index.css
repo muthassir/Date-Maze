@@ -16,3 +16,23 @@ html{
 ul li{
     @apply hover:bg-slate-100 rounded pl-2;
 }
+@keyframes float-heart {
+  0% {
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-50vh) translateX(-20px) rotate(20deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px) rotate(-20deg);
+    opacity: 0;
+  }
+}
+
+.animate-float-heart {
+  animation-name: float-heart;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 1; /* one float per heart */
+}

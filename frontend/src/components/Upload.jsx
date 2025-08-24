@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Loading from "./Loading";
 
-
-// const API = "https://date-maze.onrender.com";
-const API = "http://localhost:5000"; 
-
+const CLOUD_NAME = "de13d1vnc"; // from Cloudinary dashboard
+const UPLOAD_PRESET = "my_upload_preset"; // unsigned preset
 
 const Upload = ({ letter, slogan }) => {
-  const { token, setUser } = useAuth();
+  const { token, setUser, API } = useAuth();
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -19,17 +17,32 @@ const Upload = ({ letter, slogan }) => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("photo", file);
+    setLoading(true);
+    setError("");
 
     try {
-      setLoading(true);
-      setError("");
+      // 1. Upload image to Cloudinary
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
 
+      const cloudinaryRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        { method: "POST", body: formData }
+      );
+      const cloudinaryData = await cloudinaryRes.json();
+
+      if (!cloudinaryRes.ok) {
+        throw new Error(cloudinaryData.error?.message || "Cloudinary upload failed");
+      }
+
+      const photoUrl = cloudinaryData.secure_url;
+
+      // 2. Save Cloudinary URL in backend
       const res = await fetch(`${API}/api/upload/${letter}`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ url: photoUrl }),
       });
 
       const data = await res.json();
@@ -42,7 +55,7 @@ const Upload = ({ letter, slogan }) => {
         });
         setFile(null);
       } else {
-        setError(data.message || "Upload failed");
+        setError(data.message || "Failed to save image");
       }
     } catch (err) {
       console.error("Upload error:", err);
@@ -53,24 +66,14 @@ const Upload = ({ letter, slogan }) => {
   };
 
   return (
-    <div className="flex flex-col items-center p-4 bg-white rounded-2xl shadow-lg w-60 
+    <div className="flex flex-col items-center p-4 bg-transparent rounded-2xl shadow-lg w-60 
                     hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
-      {/* <h3 className="text-2xl font-extrabold text-pink-600">{letter}</h3> */}
-      <span className="text-sm text-gray-700 mt-1 italic">{slogan} Date</span>
+      <span className="text-sm text-error mt-1 italic">{slogan} Date</span>
 
-      {/* Error alert */}
       {error && (
-        <div
-          role="alert"
-          className="alert alert-error mt-3 w-full shadow-md rounded-lg"
-        >
+        <div role="alert" className="alert alert-error mt-3 w-full shadow-md rounded-lg">
           <span className="font-semibold">{error}</span>
-          <button
-            onClick={() => setError("")}
-            className="btn btn-xs btn-ghost ml-auto"
-          >
-            ✕
-          </button>
+          <button onClick={() => setError("")} className="btn btn-xs btn-ghost ml-auto">✕</button>
         </div>
       )}
 
@@ -86,11 +89,7 @@ const Upload = ({ letter, slogan }) => {
         className="btn btn-error mt-3 w-full transform hover:scale-105 transition-all duration-200"
         disabled={loading}
       >
-        {loading ? (
-          <Loading />
-        ) : (
-          "Upload"
-        )}
+        {loading ? <Loading /> : "Upload"}
       </button>
     </div>
   );
