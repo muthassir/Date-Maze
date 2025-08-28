@@ -83,14 +83,16 @@ const Rating = () => {
 
   if (!user) {
     return (
-      <div className="p-6 flex flex-col gap-4 items-center">
+      <div className="p-6 flex flex-col gap-4 items-center rounded-3xl shadow-2xl
+        bg-white/20 backdrop-blur-lg border border-white/30 m-6">
         <p>Please log in to rate your experience.</p>
       </div>
     );
   }
 
   return (
-    <div className="p-6 flex flex-col gap-4 items-center">
+    <div className="p-6 flex flex-col gap-4 items-center rounded-3xl shadow-2xl
+        bg-white/20 backdrop-blur-lg border border-white/30 m-6">
       <h2 className="text-xl font-semibold">Rate Your Experience</h2>
 
       {/* Stars */}

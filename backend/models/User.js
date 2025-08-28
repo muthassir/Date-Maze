@@ -11,10 +11,10 @@ const userSchema = new mongoose.Schema({
     },
   ],
   rating: { type: Number, default: 0 },
-   status: { type: String, enum: ["Single", "Dating", "Married"], default: "Single" },
+  status: { type: String, enum: ["Single", "Dating", "Married"], default: "Single" },
   coupleName: { type: String, default: "" },
-  partnerEmail: { type: String, default: "" },
+  partnerEmail: { type: String, default: null },
   
 });
 
-module.exports = mongoose.model("Usera-z", userSchema);
+module.exports = mongoose.model("UserAZ", userSchema);

@@ -71,31 +71,25 @@ router.post("/login", async (req, res) => {
 });
 
 // Update user profile (status, coupleName)
+// In routes/auth.js - UPDATE route only for status/coupleName (NO LINKING)
 router.put("/update", auth, async (req, res) => {
   try {
-    const { status, coupleName, partnerEmail } = req.body;
-
+    const { status, coupleName } = req.body; // Remove partnerEmail from here
     const user = await User.findById(req.user);
+
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    user.status = status || user.status;
-    user.coupleName = status !== "Single" ? coupleName : ""; // clear coupleName if single
-    user.partnerEmail = status !== "Single" ? partnerEmail : ""; // clear partnerEmail if single
+    // Only allow updating status and coupleName
+    if (status) user.status = status;
+    if (coupleName) user.coupleName = coupleName;
 
     await user.save();
+    
+    res.json(user); // Return updated user
 
-    res.json({
-      username: user.username,
-      email: user.email,
-      photos: user.photos,
-      rating: user.rating,
-      status: user.status,
-      coupleName: user.coupleName,
-      partnerEmail: user.partnerEmail, 
-    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Failed to update profile", error: err.message });
+    res.status(500).json({ message: "Server error" });
   }
 });
 

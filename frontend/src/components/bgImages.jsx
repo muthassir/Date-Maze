@@ -13,11 +13,11 @@ import Library from "../assets/Library.jpg"
 import Museum  from "../assets/Museum.jpg"
 import Netflix from "../assets/Netflix.jpg"
 import Offroad from "../assets/Offroad.jpg"
-import Picnic from "../assets/Picnic.jpg"
+import Park from "../assets/Park.jpg"
 import Quick from "../assets/Quickshower.jpg"
 import River from "../assets/River.jpg"
 import Snow from "../assets/Snow.jpg"
-import Theatre from "../assets/Theatre.jpg"
+import Theatre from "../assets/Theatres.jpg"
 import Umbrella from "../assets/Umbrellarain.jpg"
 import Valentine from "../assets/Valentine.jpg"
 import Waterfall from "../assets/Waterfall.jpg"
@@ -42,7 +42,7 @@ const bgImages = [
   Museum,
   Netflix,
   Offroad,
-  Picnic,
+  Park,
   Quick,
   River,
   Snow,

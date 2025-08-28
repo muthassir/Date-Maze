@@ -6,7 +6,7 @@ const Header = () => {
   const { user } = useAuth();
 
   return (
-    <header className="navbar bg-base-100 shadow-md px-6 fixed top-0 left-0 w-full z-50">
+    <header className="navbar bg-white shadow-md px-6 fixed top-0 left-0 w-full z-50">
       {/* Navbar Start */}
       <div className="navbar-start">
         <div className="dropdown">
@@ -34,9 +34,9 @@ const Header = () => {
             tabIndex={0}
             className="menu menu-sm dropdown-content bg-white rounded-box z-50 mt-3 w-52 gap-4 p-2 shadow-lg border border-pink-200 text-black"
           >
-            <Link to="/"><li className="hover:bg-pink-100 rounded">Homepage</li></Link>
+            <Link to="/"><li className="hover:bg-pink-100 rounded">Dashboard</li></Link>
+            <Link to="/alphabet"><li className="hover:bg-pink-100 rounded">Alphabet Date</li></Link>
             {user && <Link to="/message"><li className="hover:bg-pink-100 rounded">Message</li></Link> }
-            
             <Link to="/quiz"><li className="hover:bg-pink-100 rounded">Quiz</li></Link>
             <Link to="/love-meter"><li className="hover:bg-pink-100 rounded">Love Meter</li></Link>
             <Link to="/about"><li className="hover:bg-pink-100 rounded">About</li></Link>

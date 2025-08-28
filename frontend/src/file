@@ -1,0 +1,89 @@
+// import { useState } from "react";
+
+// const questions = [
+//   "What is your partner’s favorite food?",
+//   "Where would your partner like to go on vacation?",
+//   "What is your partner’s dream job?",
+//   "What is your partner’s favorite movie?",
+//   "What song reminds your partner of you?",
+//   "What is your partner’s favorite color?",
+//   "Who said 'I love you' first?",
+//   "What is your partner’s biggest fear?",
+//   "What is your partner’s favorite hobby?",
+//   "What was your first date location?"
+// ];
+
+// const QuizComponent = () => {
+//   const [currentQuestion, setCurrentQuestion] = useState(0);
+//   const [answers, setAnswers] = useState(Array(questions.length).fill(""));
+//   const [showResult, setShowResult] = useState(false);
+
+//   const handleChange = (e) => {
+//     const newAnswers = [...answers];
+//     newAnswers[currentQuestion] = e.target.value;
+//     setAnswers(newAnswers);
+//   };
+
+//   const handleNext = () => {
+//     if (currentQuestion < questions.length - 1) {
+//       setCurrentQuestion(currentQuestion + 1);
+//     } else {
+//       setShowResult(true);
+//     }
+//   };
+
+//   const handleRestart = () => {
+//     setAnswers(Array(questions.length).fill(""));
+//     setCurrentQuestion(0);
+//     setShowResult(false);
+//   };
+
+//   if (showResult) {
+//     return (
+//       <div className="p-6 bg-white/20 backdrop-blur-md rounded-xl shadow-lg max-w-md mx-auto mt-10 ">
+//         <h2 className="text-2xl font-bold text-pink-600 mb-4">Quiz Complete!</h2>
+//          <div className="max-h-96 overflow-y-auto">
+//         <ul className="space-y-2">
+//            {questions.map((q, i) => (
+//             <li key={i}>
+//               <strong>{q}</strong>
+//               <p className="ml-2 text-gray-700">{answers[i] || "No answer"}</p>
+//             </li>
+//           ))}
+//         </ul>
+//           </div>
+//         <button
+//           onClick={handleRestart}
+//           className="mt-4 btn btn-error w-full"
+//         >
+//           Restart Quiz
+//         </button>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="p-6 bg-white/20 backdrop-blur-md rounded-xl shadow-lg max-w-md mx-auto mt-10">
+//       <h2 className="text-xl font-bold text-pink-600 mb-4">
+//         Question {currentQuestion + 1}/{questions.length}
+//       </h2>
+//       <p className="mb-4">{questions[currentQuestion]}</p>
+//       <input
+//         type="text"
+//         value={answers[currentQuestion]}
+//         onChange={handleChange}
+//         className="input input-bordered w-full mb-4"
+//         placeholder="Type your answer..."
+//       />
+//       <button onClick={handleNext} className="btn btn-error w-full">
+//         {currentQuestion === questions.length - 1 ? "Finish Quiz" : "Next Question"}
+//       </button>
+//     </div>
+//   );
+// };
+
+// export default QuizComponent;
+
+
+
+

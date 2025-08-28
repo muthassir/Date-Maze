@@ -1,5 +1,5 @@
 const express = require("express");
-const User = require("../models/User.js"); // your model is named Usera-z, adjust import if needed
+const User = require("../models/User.js"); 
 const auth = require("../middleware/auth.js");
 
 const router = express.Router();

@@ -40,10 +40,12 @@ router.post("/", auth, async (req, res) => {
 router.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.user);
-    if (!user?.partnerEmail) return res.status(400).json({ message: "Partner email not set" });
+    if (!user?.partnerEmail)
+      return res.status(400).json({ message: "Partner email not set" });
 
     const partner = await User.findOne({ email: user.partnerEmail });
-    if (!partner) return res.status(404).json({ message: "Partner not found" });
+    if (!partner)
+      return res.status(404).json({ message: "Partner not found" });
 
     const messages = await Message.find({
       $or: [
@@ -51,15 +53,18 @@ router.get("/", auth, async (req, res) => {
         { sender: partner._id, receiver: req.user },
       ],
     })
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 }) // ensure ascending order (oldest first)
       .populate("sender", "username email")
       .populate("receiver", "username email");
 
     res.json(messages);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Failed to get messages", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to get messages", error: err.message });
   }
 });
+
 
 module.exports = router;

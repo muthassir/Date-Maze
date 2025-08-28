@@ -3,35 +3,53 @@ import { useAuth } from "../context/AuthContext";
 import Loading from "./Loading";
 import axios from "axios";
 
-
 const Profile = () => {
   const { user, token, setUser, logout, API } = useAuth();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState(user?.status || "Single");
-  const [coupleName, setCoupleName] = useState(user?.coupleName || "");
   const [partnerEmail, setPartnerEmail] = useState(user?.partnerEmail || "");
+  const [coupleName, setCoupleName] = useState(user?.coupleName || "");
   const [isDirty, setIsDirty] = useState(false);
 
-
-  // Track changes
+  // Track changes to enable Save button
   useEffect(() => {
     if (
       status !== (user?.status || "Single") ||
-      coupleName !== (user?.coupleName || "") ||
-      partnerEmail !== (user?.partnerEmail || "")
+      partnerEmail !== (user?.partnerEmail || "") ||
+      coupleName !== (user?.coupleName || "")
     ) {
       setIsDirty(true);
     } else {
       setIsDirty(false);
     }
-  }, [status, coupleName, partnerEmail, user]);
+  }, [status, partnerEmail, coupleName, user]);
+
+  // Fetch partner username as coupleName when email changes
+  useEffect(() => {
+    const fetchPartnerName = async () => {
+      if (!partnerEmail) return setCoupleName("");
+      try {
+        const res = await axios.get(`${API}/api/auth/by-email/${partnerEmail}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCoupleName(res.data.username || "");
+      } catch (err) {
+        setCoupleName("");
+      }
+    };
+
+    if (status !== "Single") {
+      fetchPartnerName();
+    } else {
+      setCoupleName("");
+    }
+  }, [partnerEmail, status, API, token]);
 
   const handleLogout = async () => {
     try {
       await logout();
-      // no need to navigate, Header/App will update automatically
-        window.location.reload(); // Refresh the page
+      window.location.reload();
     } catch (err) {
       console.error(err);
       setError("Logout failed. Please try again.");
@@ -42,18 +60,31 @@ const Profile = () => {
     try {
       setSaving(true);
       setError("");
-      const res = await axios.put(
-        `${API}/api/auth/update`,
-        { status, coupleName, partnerEmail },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
 
+      let res;
+      if (status !== "Single" && partnerEmail) {
+        // Call couple/link endpoint
+        res = await axios.post(
+          `${API}/api/couple/link`,
+          { partnerEmail },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } else {
+        // Update status only
+        res = await axios.put(
+          `${API}/api/auth/update`,
+          { status },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
+
+      // Update context and localStorage
       setUser((prev) => {
         const updated = {
           ...prev,
-          status: res.data.status,
-          coupleName: res.data.coupleName,
-          partnerEmail: res.data.partnerEmail,
+          status: res.data.status || status,
+          partnerEmail: res.data.partnerEmail || partnerEmail,
+          coupleName: res.data.coupleName || coupleName,
         };
         localStorage.setItem("user", JSON.stringify(updated));
         return updated;
@@ -76,20 +107,32 @@ const Profile = () => {
         <div className="avatar">
           <div className="ring-error h-6 ring-offset-base-100 w-6 rounded-full ring-2 ring-offset-2 cursor-pointer">
             <button
-              onClick={() => document.getElementById("profile_modal")?.showModal()}
+              onClick={() =>
+                document.getElementById("profile_modal")?.showModal()
+              }
               className="cursor-pointer"
             >
               {user.username?.charAt(0).toUpperCase()}
             </button>
 
-            <dialog id="profile_modal" className="modal modal-center sm:modal-middle">
+            <dialog
+              id="profile_modal"
+              className="modal modal-center sm:modal-middle"
+            >
               <div className="modal-box">
                 <h3 className="font-bold text-lg">Profile</h3>
 
                 <div className="mt-2 space-y-2">
-                  <p><strong>Name:</strong> {user.username}</p>
-                  <p><strong>Email:</strong> {user.email}</p>
-
+                  <p>
+                    <strong>Name:</strong> {user.username}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {user.email}
+                  </p>
+                  <p>
+                    <strong>Couple Name:</strong> {user.coupleName? user.coupleName :"not linked"}
+                  </p>
+            
                   <div>
                     <label className="font-semibold">Status:</label>
                     <select
@@ -104,29 +147,21 @@ const Profile = () => {
                   </div>
 
                   {status !== "Single" && (
-                    <>
-                      <div>
-                        <label className="font-semibold">Couple Name:</label>
-                        <input
-                          type="text"
-                          value={coupleName}
-                          onChange={(e) => setCoupleName(e.target.value)}
-                          className="input input-bordered input-sm w-full max-w-xs"
-                          placeholder="Enter couple name"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="font-semibold">Partner Email:</label>
-                        <input
-                          type="email"
-                          value={partnerEmail}
-                          onChange={(e) => setPartnerEmail(e.target.value)}
-                          className="input input-bordered input-sm w-full max-w-xs"
-                          placeholder="Enter partner's email"
-                        />
-                      </div>
-                    </>
+                    <div>
+                      <label className="font-semibold">Partner Email:</label>
+                      <input
+                        type="email"
+                        value={partnerEmail}
+                        onChange={(e) => setPartnerEmail(e.target.value)}
+                        className="input input-bordered input-sm w-full max-w-xs"
+                        placeholder="Enter partner's email"
+                      />
+                      {coupleName && (
+                        <p className="mt-1 text-sm">
+                          <strong>Couple Name:</strong> {coupleName}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
 
